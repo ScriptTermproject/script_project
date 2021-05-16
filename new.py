@@ -1,42 +1,73 @@
 from urllib.request import urlopen
 from xml.dom.minidom import parse, parseString
 from xml.etree import ElementTree
+
 import urllib
+import urllib.request
 import http.client
 import time
 
 from tkinter import *
+#import io import BytesIO
 
 rectm=[]
 recws=[]
 
+frame1_width = 570
+frame2_height = 65
+frame2_width = 400
+frame3_width = frame1_width - frame2_width
 class maingui():
+
     def __init__(self):
         window = Tk()
         window.title('날씨에 맞는 옷차림 추천')
 
-        frame = Frame(window, width=800, height=60)
+
+        frame = Frame(window, width=frame1_width, height=frame2_height)
         frame.pack()
-        self.entry = Entry(frame, width=100)
+        frame1_bg = PhotoImage(file = 'resource/배경화면.png')
+        self.label = Label(frame,image = frame1_bg).place(x=0,y=0)
+        self.entry = Entry(frame, width=47)
         # entry.insert(0,'검색할 지역을 시 단위로 입력하세요')
         self.entry.insert(0, '시흥')
-        self.entry.place(x=20, y=30)
-        Button(frame, text='엔터', width=5, command=self.search).place(x=730, y=30)
+        self.entry.place(x=50, y=30)
 
-        frame2 = Frame(window, width=600, height=500)
+        #검색버튼 크기조정
+        button_width= 60
+        button_height= 50
+
+        enter_image = PhotoImage(file="resource/검색40.png")
+        self.search_button = Button(frame, text='엔터', width=40,image = enter_image, command=self.search).place(x=frame2_width,y=(frame2_height-40)/2)
+
+        bottom_GUI_height = 450
+        frame2 = Frame(window, width=frame2_width, height=bottom_GUI_height)
         frame2.pack(side=LEFT)
-        self.canvas = Canvas(frame2, width=600, height=400)
+        self.label2 = Label(frame2, image=frame1_bg).place(x=0, y=0)
+        self.canvas = Canvas(frame2, width=frame2_width, height=400)
         self.canvas.pack()
-        self.canvas.create_rectangle(30,0,600,400,fill='cyan')
+        self.canvas.create_rectangle(50, 5, frame2_width, 390, fill='cyan')
 
-        frame3 = Frame(window, width=200, height=500)
+        frame3 = Frame(window, width=frame3_width, height=bottom_GUI_height)
         frame3.pack(side=LEFT)
-        Button(frame3, text='지도', width=10, height=2, command=self.Map).place(x=0, y=50)
-        Button(frame3, text='그래프', width=10, height=2, command=self.graph).place(x=0, y=90)
-        Button(frame3, text='명소', width=10, height=2, command=self.spot).place(x=0, y=130)
-        Button(frame3, text='텔레그램', width=10, height=2, command=self.tele).place(x=0, y=170)
-        Button(frame3, text='추천 옷차림', width=25, height=12, command=self.search).place(x=0, y=260)
-        Label(frame3, text='오늘의 날씨 정보').place(x=100, y=100)
+        frame3_bg = PhotoImage(file='resource/제목.png')
+        self.label3 = Label(frame3, image=frame3_bg).place(x=0, y=0)
+
+        #버튼 이미지넣기
+        home_image = PhotoImage(file = "resource/홈.png")
+        graph_image = PhotoImage(file = "resource/그래프.gif")
+        hotplace_image = PhotoImage(file = "resource/명소.png")
+        telegram_image = PhotoImage(file = "resource/텔레그램.png")
+        bestfashion_image = PhotoImage(file = "resource/추천의상.png")
+
+        button_x=0
+        button_y=26
+        Button(frame3, text='지도', width=button_width, height=button_height,image = home_image ,command=self.Map).place(x=0, y=button_y)
+        Button(frame3, text='그래프', width=button_width, height=button_height,image = graph_image, command=self.graph).place(x=0, y=button_y+55)
+        Button(frame3, text='명소', width=button_width, height=button_height,image = hotplace_image, command=self.spot).place(x=0, y=button_y+110)
+        Button(frame3, text='텔레그램', width=button_width, height=button_height,image = telegram_image, command=self.tele).place(x=0, y=button_y+165)
+        Button(frame3, text='추천 옷차림', width=130, height=140,image = bestfashion_image, command=self.search).place(x=19, y=290)
+        #Label(frame3, text='오늘의 날씨 정보').place(x=100, y=100)
 
         window.mainloop()
 
@@ -207,6 +238,8 @@ class maingui():
             self.canvas.create_text(75 + 56 * i, 400-100 * recws[i]/Maxw - 10, text=recws[i], tags='canvas')
 
     def spot(self):
+        #from PIL import Image, ImageTK
+        #url = "https://www.data.go.kr/tcs/dss/selectApiDataDetailView.do?publicDataPk=15024675"
         self.canvas.delete('canvas')
         self.canvas.create_text(300, 210, text='명소',tags='canvas')
 
@@ -214,4 +247,4 @@ class maingui():
         self.canvas.delete('canvas')
         self.canvas.create_text(300, 210, text='텔레그램',tags='canvas')
 
-maingui()
+maingui()maingui()
