@@ -45,7 +45,7 @@ class maingui():
         frame2.pack(side=LEFT)
         self.label2 = Label(frame2, image=frame1_bg).place(x=0, y=0)
         self.canvas = Canvas(frame2, width=frame2_width, height=400)
-        self.canvas.pack()
+        #self.canvas.pack()
         self.canvas.create_rectangle(50, 5, frame2_width, 390, fill='cyan')
 
         frame3 = Frame(window, width=frame3_width, height=bottom_GUI_height)
@@ -247,4 +247,4 @@ class maingui():
         self.canvas.delete('canvas')
         self.canvas.create_text(300, 210, text='텔레그램',tags='canvas')
 
-maingui()maingui()
+maingui()
