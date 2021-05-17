@@ -1,6 +1,7 @@
 from urllib.request import urlopen
 from xml.dom.minidom import parse, parseString
 from xml.etree import ElementTree
+from PIL import ImageTk,Image as image  #이미지 크기 조정  사용하려면 파이참 아래의 Terminal 클릭하고 pip install pillow입력
 
 import urllib
 import urllib.request
@@ -13,9 +14,9 @@ from tkinter import *
 rectm=[]
 recws=[]
 
-frame1_width = 570
+frame1_width = 770
 frame2_height = 65
-frame2_width = 400
+frame2_width = 600
 frame3_width = frame1_width - frame2_width
 class maingui():
 
@@ -26,12 +27,20 @@ class maingui():
 
         frame = Frame(window, width=frame1_width, height=frame2_height)
         frame.pack()
-        frame1_bg = PhotoImage(file = 'resource/배경화면.png')
-        self.label = Label(frame,image = frame1_bg).place(x=0,y=0)
-        self.entry = Entry(frame, width=47)
+
+        # 이미지 리사이즈
+        frame_im = image.open('resource/배경화면.png')
+        resizeimg=frame_im.resize((frame1_width, 248), image.ANTIALIAS)
+        frame1_bg=ImageTk.PhotoImage(resizeimg)
+
+        resizeimg2 = frame_im.resize((frame2_width, 400), image.ANTIALIAS)
+        frame2_bg=ImageTk.PhotoImage(resizeimg2)
+
+        Label(frame,image = frame1_bg).place(x=0,y=0)
+        self.entry = Entry(frame, width=60)
         # entry.insert(0,'검색할 지역을 시 단위로 입력하세요')
         self.entry.insert(0, '시흥')
-        self.entry.place(x=50, y=30)
+        self.entry.place(x=130, y=30)
 
         #검색버튼 크기조정
         button_width= 60
@@ -43,15 +52,25 @@ class maingui():
         bottom_GUI_height = 450
         frame2 = Frame(window, width=frame2_width, height=bottom_GUI_height)
         frame2.pack(side=LEFT)
-        self.label2 = Label(frame2, image=frame1_bg).place(x=0, y=0)
-        self.canvas = Canvas(frame2, width=frame2_width, height=400)
-        #self.canvas.pack()
-        self.canvas.create_rectangle(50, 5, frame2_width, 390, fill='cyan')
+        Label(frame2, image=frame2_bg).place(x=0, y=100)
+        self.canvas = Canvas(frame2, width=frame2_width+100, height=400)
+        self.canvas.place(x=-30,y=0)
+        self.canvas.create_image(30, 0, anchor='nw', image=frame2_bg) #캔버스 배경
+
+        night = image.open('resource/night.png')# 밤
+        resizeimg3 = night.resize((110, 100), image.ANTIALIAS)
+        self.night = ImageTk.PhotoImage(resizeimg3)
+        sunny = image.open('resource/sunny.png')  # 낮
+        resizeimg4 = sunny.resize((110, 100), image.ANTIALIAS)
+        self.sunny = ImageTk.PhotoImage(resizeimg4)
+        rain = image.open('resource/rain.png')  # 비
+        resizeimg5 = rain.resize((110, 100), image.ANTIALIAS)
+        self.rain = ImageTk.PhotoImage(resizeimg5)
 
         frame3 = Frame(window, width=frame3_width, height=bottom_GUI_height)
         frame3.pack(side=LEFT)
         frame3_bg = PhotoImage(file='resource/제목.png')
-        self.label3 = Label(frame3, image=frame3_bg).place(x=0, y=0)
+        Label(frame3, image=frame3_bg).place(x=0, y=0)
 
         #버튼 이미지넣기
         home_image = PhotoImage(file = "resource/홈.png")
@@ -77,8 +96,9 @@ class maingui():
         itemElements = tree.iter("row")
 
         for item in itemElements:
-            self.tp = item.find("TP_INFO")
-            self.ws = item.find("WS_INFO")
+            self.tp = item.find("TP_INFO") #기온
+            self.ws = item.find("WS_INFO") #풍속
+            self.rain=item.find("RAINF_1HR_INFO") #시간누적강수량
             if len(self.ws.text) > 0 :
                 T=float(self.tp.text)
                 V=(float(self.ws.text)*3.6) ** (0.16)
@@ -117,6 +137,15 @@ class maingui():
         self.canvas.create_text(90, 360, text='현재 풍속: ' + self.ws.text+' m/s', tags='canvas')  # m/s
         # 13.12 + 0.6215 * T - 11.37 * V ^ (0.16) + 0.3965 * V ^ (0.16) * T
         self.canvas.create_text(90, 390, text='체감 기온: {0:.3f}'.format(self.tm)+' ℃', tags='canvas')
+        self.canvas.create_text(290, 390, text='시간 누적 강수량: {0:.1f}'.format(float(self.rain.text)) + 'mm', tags='canvas')
+        if(float(self.rain.text)>0):
+            self.canvas.create_image(380, 300, anchor=NW, image=self.rain, tags='canvas')
+        if(6<=now.tm_hour<=19):
+            self.canvas.create_image(380, 300, anchor=NW, image=self.sunny, tags='canvas')
+        else:
+            self.canvas.create_image(380, 300, anchor=NW, image=self.night, tags='canvas')
+
+
         self.canvas.create_text(300, 160, text='지도',tags='canvas')
 
     def graph(self):
@@ -231,11 +260,11 @@ class maingui():
         Maxt=max(rectm)
         Maxw=max(recws)
         for i in range(len(rectm)):
-            self.canvas.create_rectangle(40+56*i,400-200*rectm[i]/Maxt,63+56*i,380,fill='orange',tags='canvas')
-            self.canvas.create_text(63+56*i,390,text=now.tm_hour-i,tags='canvas')
-            self.canvas.create_text(53 + 56 * i, 400-200*rectm[i]/Maxt-10, text=rectm[i], tags='canvas')
-            self.canvas.create_rectangle(63+56*i, 400-100 * recws[i]/Maxw, 30 + 56 * (i + 1), 380, fill='blue',tags='canvas')
-            self.canvas.create_text(75 + 56 * i, 400-100 * recws[i]/Maxw - 10, text=recws[i], tags='canvas')
+            self.canvas.create_rectangle(50+56*i,380-200*rectm[i]/Maxt,73+56*i,380,fill='orange',tags='canvas')
+            self.canvas.create_text(73+56*i,390,text=now.tm_hour-i,tags='canvas')
+            self.canvas.create_text(63 + 56 * i, 380-200*rectm[i]/Maxt-10, text=rectm[i], tags='canvas')
+            self.canvas.create_rectangle(73+56*i, 380-100 * recws[i]/Maxw, 40 + 56 * (i + 1), 380, fill='blue',tags='canvas')
+            self.canvas.create_text(85 + 56 * i, 380-100 * recws[i]/Maxw - 10, text=recws[i], tags='canvas')
 
     def spot(self):
         #from PIL import Image, ImageTK
