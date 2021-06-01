@@ -39,7 +39,7 @@ class maingui:
 
         # 이미지 리사이즈
         frame_im = image.open('resource/배경화면.png')
-        frame2_im = image.open('resource/배경화면2.png')
+        frame2_im = image.open('resource/배경화면.png')
         resizeimg=frame_im.resize((frame1_width, 250), image.ANTIALIAS)
         frame1_bg=ImageTk.PhotoImage(resizeimg)
 
@@ -81,7 +81,7 @@ class maingui:
         self.sunny = ImageTk.PhotoImage(resizeimg4)
         rain = image.open('resource/rain.png')  # 비
         resizeimg5 = rain.resize((110, 100), image.ANTIALIAS)
-        self.rain = ImageTk.PhotoImage(resizeimg5)
+        self.rainimg = ImageTk.PhotoImage(resizeimg5)
 
 
         rw = 100
@@ -246,7 +246,7 @@ class maingui:
         self.canvas.create_text(90, 390, text='체감 기온: {0:.3f}'.format(self.tm)+' ℃', tags='canvas')
         self.canvas.create_text(290, 390, text='시간 누적 강수량: {0:.1f}'.format(float(self.rain.text)) + 'mm', tags='canvas')
         if(float(self.rain.text)>0):
-            self.canvas.create_image(380, 300, anchor=NW, image=self.rain, tags='canvas')
+            self.canvas.create_image(380, 300, anchor=NW, image=self.rainimg, tags='canvas')
         else:
             if(6<=now.tm_hour<=19):
                 self.canvas.create_image(380, 300, anchor=NW, image=self.sunny, tags='canvas')
@@ -407,20 +407,20 @@ class maingui:
         with urllib.request.urlopen(self.sSpot_img.text) as u:
             raw_data=u.read()
         im = image.open(BytesIO(raw_data))
-        i = ImageTk.PhotoImage(im)
-
+        img = ImageTk.PhotoImage(im)
         self.canvas.delete('canvas')
+        resizeimg3 = im.resize((frame2_width+30, 340), image.ANTIALIAS)
+        location = ImageTk.PhotoImage(resizeimg3)
 
         w = frame2_width/2 + 50
-        h = 300
+        h = 350
 
         self.canvas.create_text(w, h, text=self.sName.text,tags='canvas')
         self.canvas.create_text(w, h+20, text=self.sLocation.text,tags='canvas')
         self.canvas.create_text(w, h+40, text=self.sKeywords.text,tags='canvas')
-        self.canvas.create_image(0, 0, image=i)
+        self.canvas.create_image(0, 0, anchor=NW, image=location, tags='canvas')
 
-
-        #Label(self.frame2, image=i, width=400, height=400).place(x=0, y=0)
+        Label( image) #오류나는 코드인데 이거 지우면 이미지가 안보임
 
     def tele(self):
         self.canvas.delete('canvas')
