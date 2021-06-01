@@ -84,8 +84,8 @@ class maingui:
         self.rainimg = ImageTk.PhotoImage(resizeimg5)
 
 
-        rw = 100
-        rh = 80
+        rw = 135
+        rh = 145
         c1 = image.open('resource/28이상.png')
         resizeimg6 =c1.resize((rw,rh),image.ANTIALIAS)
         self.cloth1 = ImageTk.PhotoImage(resizeimg6)
@@ -99,11 +99,11 @@ class maingui:
         self.cloth3 = ImageTk.PhotoImage(resizeimg8)
 
         c4 = image.open('resource/17~19.png')
-        resizeimg9 = c4.resize((135, 145), image.ANTIALIAS)
+        resizeimg9 = c4.resize((rw, rh), image.ANTIALIAS)
         self.cloth4 = ImageTk.PhotoImage(resizeimg9)
 
         c5 = image.open('resource/12~16.png')
-        resizeimg10 = c5.resize((135, 145), image.ANTIALIAS)
+        resizeimg10 = c5.resize((rw, rh), image.ANTIALIAS)
         self.cloth5 = ImageTk.PhotoImage(resizeimg10)
 
         c6 = image.open('resource/9~11.png')
@@ -409,7 +409,7 @@ class maingui:
         im = image.open(BytesIO(raw_data))
         img = ImageTk.PhotoImage(im)
         self.canvas.delete('canvas')
-        resizeimg3 = im.resize((frame2_width+30, 340), image.ANTIALIAS)
+        resizeimg3 = im.resize((frame2_width-50, 300), image.ANTIALIAS)
         location = ImageTk.PhotoImage(resizeimg3)
 
         w = frame2_width/2 + 50
@@ -418,9 +418,9 @@ class maingui:
         self.canvas.create_text(w, h, text=self.sName.text,tags='canvas')
         self.canvas.create_text(w, h+20, text=self.sLocation.text,tags='canvas')
         self.canvas.create_text(w, h+40, text=self.sKeywords.text,tags='canvas')
-        self.canvas.create_image(0, 0, anchor=NW, image=location, tags='canvas')
+        self.canvas.create_image(50, 0, anchor=NW, image=location, tags='canvas')
 
-        Label( image) #오류나는 코드인데 이거 지우면 이미지가 안보임
+        Label(image) #오류나는 코드인데 이거 지우면 이미지가 안보임
 
     def tele(self):
         self.canvas.delete('canvas')
