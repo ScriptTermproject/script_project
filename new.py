@@ -39,7 +39,7 @@ class maingui:
 
         # 이미지 리사이즈
         frame_im = image.open('resource/배경화면.png')
-        frame2_im = image.open('resource/배경화면.png')
+        frame2_im = image.open('resource/배경화면2.png')
         resizeimg=frame_im.resize((frame1_width, 250), image.ANTIALIAS)
         frame1_bg=ImageTk.PhotoImage(resizeimg)
 
@@ -81,11 +81,11 @@ class maingui:
         self.sunny = ImageTk.PhotoImage(resizeimg4)
         rain = image.open('resource/rain.png')  # 비
         resizeimg5 = rain.resize((110, 100), image.ANTIALIAS)
-        self.rainimg = ImageTk.PhotoImage(resizeimg5)
+        self.rain = ImageTk.PhotoImage(resizeimg5)
 
 
-        rw = 135
-        rh = 145
+        rw = 100
+        rh = 80
         c1 = image.open('resource/28이상.png')
         resizeimg6 =c1.resize((rw,rh),image.ANTIALIAS)
         self.cloth1 = ImageTk.PhotoImage(resizeimg6)
@@ -99,11 +99,11 @@ class maingui:
         self.cloth3 = ImageTk.PhotoImage(resizeimg8)
 
         c4 = image.open('resource/17~19.png')
-        resizeimg9 = c4.resize((rw, rh), image.ANTIALIAS)
+        resizeimg9 = c4.resize((135, 145), image.ANTIALIAS)
         self.cloth4 = ImageTk.PhotoImage(resizeimg9)
 
         c5 = image.open('resource/12~16.png')
-        resizeimg10 = c5.resize((rw, rh), image.ANTIALIAS)
+        resizeimg10 = c5.resize((135, 145), image.ANTIALIAS)
         self.cloth5 = ImageTk.PhotoImage(resizeimg10)
 
         c6 = image.open('resource/9~11.png')
@@ -187,8 +187,8 @@ class maingui:
         port = "587"
         htmlFileName = "logo.html"
 
-        senderAddr = ""  # 보내는 사람 email 주소.
-        recipientAddr = ""  # 받는 사람 email 주소.
+        senderAddr = "aeiouz45@gmail.com"  # 보내는 사람 email 주소.
+        recipientAddr = "jea7027@naver.com"  # 받는 사람 email 주소.
 
         msg = MIMEBase("multipart", "alternative")
         msg['Subject'] = "Test email in Python 3.0"
@@ -209,7 +209,7 @@ class maingui:
         s.ehlo()
         s.starttls()
         s.ehlo()
-        s.login("", "")
+        s.login("aeiouz45@gmail.com", "비밀번호")
         s.sendmail(senderAddr, [recipientAddr], msg.as_string())
         s.close()
 
@@ -246,7 +246,7 @@ class maingui:
         self.canvas.create_text(90, 390, text='체감 기온: {0:.3f}'.format(self.tm)+' ℃', tags='canvas')
         self.canvas.create_text(290, 390, text='시간 누적 강수량: {0:.1f}'.format(float(self.rain.text)) + 'mm', tags='canvas')
         if(float(self.rain.text)>0):
-            self.canvas.create_image(380, 300, anchor=NW, image=self.rainimg, tags='canvas')
+            self.canvas.create_image(380, 300, anchor=NW, image=self.rain, tags='canvas')
         else:
             if(6<=now.tm_hour<=19):
                 self.canvas.create_image(380, 300, anchor=NW, image=self.sunny, tags='canvas')
@@ -407,20 +407,20 @@ class maingui:
         with urllib.request.urlopen(self.sSpot_img.text) as u:
             raw_data=u.read()
         im = image.open(BytesIO(raw_data))
-        img = ImageTk.PhotoImage(im)
+        i = ImageTk.PhotoImage(im)
+
         self.canvas.delete('canvas')
-        resizeimg3 = im.resize((frame2_width-50, 300), image.ANTIALIAS)
-        location = ImageTk.PhotoImage(resizeimg3)
 
         w = frame2_width/2 + 50
-        h = 350
+        h = 300
 
         self.canvas.create_text(w, h, text=self.sName.text,tags='canvas')
         self.canvas.create_text(w, h+20, text=self.sLocation.text,tags='canvas')
         self.canvas.create_text(w, h+40, text=self.sKeywords.text,tags='canvas')
-        self.canvas.create_image(50, 0, anchor=NW, image=location, tags='canvas')
+        self.canvas.create_image(0, 0, image=i)
 
-        Label(image) #오류나는 코드인데 이거 지우면 이미지가 안보임
+
+        #Label(self.frame2, image=i, width=400, height=400).place(x=0, y=0)
 
     def tele(self):
         self.canvas.delete('canvas')
