@@ -23,6 +23,9 @@ import folium
 # pip install cefpython3==66.1
 from cefpython3 import cefpython as cef
 
+import tkinter.font as tkFont
+import tkinter as tk
+
 rectm=[]
 recws=[]
 rec_sN=[]
@@ -30,56 +33,71 @@ rec_sI=[]
 rec_sL=[]
 rec_sK=[]
 
-frame1_width = 770
-frame2_height = 65
-frame2_width = 600
-frame3_width = frame1_width - frame2_width
-
+frame1_width = 750
+frame1_height = 500
+frame2_width = 520
+frame2_height = 400
+canvas_width = frame2_width-15
+canvas_height = frame2_height-15
 
 class maingui:
 
     def __init__(self):
         window = Tk()
         window.title('날씨에 맞는 옷차림 추천')
+        window.configure(bg = 'white')
+        #글꼴 추가
+        self.font = tkFont.Font(family="SeoulHangangEB.ttf", size=13, weight="bold", slant="italic")
+        self.font2 = tkFont.Font(family="SeoulHangangEB.ttf", size=13, weight="bold", slant="roman")
 
-        frame = Frame(window, width=frame1_width, height=frame2_height)
-        frame.pack(side = TOP)
+        frame = Frame(window, width=frame1_width, height=frame1_height)
+        frame['relief']= 'flat'
+        frame['borderwidth'] = 0
+        frame.pack()
 
         # 이미지 리사이즈
-        frame_im = image.open('resource/배경화면.png')
-        frame2_im = image.open('resource/배경화면.png')
-        resizeimg=frame_im.resize((frame1_width, 250), image.ANTIALIAS)
+        frame_im = image.open('resource/제목.png')
+        frame2_im = image.open('resource/배경화면3.png')
+        resizeimg=frame_im.resize((frame1_width, frame1_height), image.ANTIALIAS)
         frame1_bg=ImageTk.PhotoImage(resizeimg)
 
-        resizeimg2 = frame2_im.resize((frame2_width, 403), image.ANTIALIAS)
+        resizeimg2 = frame2_im.resize((frame2_width, 500), image.ANTIALIAS)
         frame2_bg=ImageTk.PhotoImage(resizeimg2)
 
-        resizeimg2_2 = frame_im.resize((frame2_width, 400), image.ANTIALIAS)
+        resizeimg2_2 = frame_im.resize((frame2_width, 600), image.ANTIALIAS)
         frame2_2_bg = ImageTk.PhotoImage(resizeimg2_2)
 
         Label(frame,image = frame1_bg).place(x=0,y=0)
-        self.entry = Entry(frame, width=60)
-        # entry.insert(0,'검색할 지역을 시 단위로 입력하세요')
+        self.entry = Entry(frame, width=50 ,foreground ='gray', borderwidth=4,insertbackground = 'white',selectbackground='gray',selectforeground = 'black' ,background = 'white',relief='solid',font = self.font,insertontime = 600,insertofftime = 300)
+        # entry.insert(0,'검색할 지역을 시 단위로 입력하세요.')
         self.entry.insert(0, '시흥')
-        self.entry.place(x=130, y=30)
+        self.entry.place(x=70, y=20)
 
+        #Label(frame,text = '오늘의 날씨 정보' ,font = font).place(x=600,y=70)
         #검색버튼 크기조정
-        button_width= 60
-        button_height= 50
+        button_width= 50
+        button_height= 40
 
         enter_image = PhotoImage(file="resource/검색40.png")
         gmail_image = PhotoImage(file="resource/메일.png")
+        self.silid_size = '4'
+        x1 = 550
+        y1 = 15
+        self.search_button = Button(frame, text='엔터', height = 30,width=30,image = enter_image,relief='solid',overrelief ='flat',bd = self.silid_size,padx = 0,pady = 0, command=self.search).place(x=x1,y=y1)
+        self.gmail_button = Button(frame, text='이메일', height = 30,width=30,image = gmail_image,relief='solid',overrelief ='flat',bd = self.silid_size,padx = 0,pady = 0, command=self.gmail).place(x=x1+60,y=y1)
 
-        self.search_button = Button(frame, text='엔터', width=40,image = enter_image, command=self.search).place(x=frame2_width,y=(frame2_height-40)/2)
-        self.gmail_button = Button(frame, text='이메일', width=40,image = gmail_image, command=self.gmail).place(x=frame2_width+60,y=(frame2_height-40)/2)
+        x2=30
+        y2=70
+        self.frame2 = Frame(window, width=frame2_width, height=frame2_height)
+        self.frame2['relief']= 'solid'
 
-        bottom_GUI_height = 450
-        self.frame2 = Frame(window, width=frame2_width, height=bottom_GUI_height)
-        self.frame2.pack(side=LEFT)
-        Label(self.frame2, image=frame2_2_bg).place(x=0, y=97)
-        self.canvas = Canvas(self.frame2, width=frame2_width+100, height=400)
-        self.canvas.place(x=-30,y=0)
-        self.canvas.create_image(30, 0, anchor='nw', image=frame2_bg) #캔버스 배경
+        self.frame2['borderwidth'] = 5
+        self.frame2.place(x=x2,y=y2)
+
+        #Label(self.frame2, image=frame2_2_bg).place(x=0, y=97)
+        self.canvas = Canvas(self.frame2, width=frame2_width-15, height=frame2_height-15, bg = 'white')
+        self.canvas.place(x=0,y=0)
+        #self.canvas.create_image(30, 0, anchor='nw', image=frame2_bg) #캔버스 배경
 
         weatherx=90
         weathery=80
@@ -130,10 +148,10 @@ class maingui:
 
 
 
-        self.frame3 = Frame(window, width=frame3_width, height=bottom_GUI_height)
-        self.frame3.pack(side=LEFT)
-        frame3_bg = PhotoImage(file='resource/제목.png')
-        Label(self.frame3, image=frame3_bg).place(x=0, y=0)
+        self.frame3 = Frame(window, width=60, height=52*4-2)
+        self.frame3.place(x=550,y=100)
+        #frame3_bg = PhotoImage(file='resource/제목.png')
+        #Label(self.frame3, image=frame3_bg).place(x=0, y=0)
 
         #버튼 이미지넣기
         home_image = PhotoImage(file = "resource/홈.png")
@@ -143,12 +161,12 @@ class maingui:
         bestfashion_image = PhotoImage(file = "resource/추천의상.png")
 
         button_x=0
-        button_y=26
-        Button(self.frame3, text='지도', width=button_width, height=button_height,image = home_image ,command=self.Map).place(x=0, y=button_y)
-        Button(self.frame3, text='그래프', width=button_width, height=button_height,image = graph_image, command=self.graph).place(x=0, y=button_y+55)
-        Button(self.frame3, text='명소', width=button_width, height=button_height,image = hotplace_image, command=self.spot).place(x=0, y=button_y+110)
-        Button(self.frame3,text='텔레그램', width=button_width, height=button_height,image = telegram_image, command=self.tele).place(x=0, y=button_y+165)
-        Label(self.frame3, text='추천 옷차림', width=130, height=140,image = bestfashion_image).place(x=19, y=290)
+        button_y=0
+        Button(self.frame3, text='지도',relief='solid',overrelief ='ridge',bd = self.silid_size,background='white',padx = 0,pady = 0, width=button_width, height=button_height,image = home_image ,command=self.Map).place(x=button_x, y=button_y)
+        Button(self.frame3, text='그래프', relief='solid',overrelief ='ridge',bd = self.silid_size,background='white',padx = 0,pady = 0,width=button_width, height=button_height,image = graph_image, command=self.graph).place(x=button_x, y=button_y+52)
+        Button(self.frame3, text='명소',relief='solid',overrelief ='ridge',bd = self.silid_size,background='white',padx = 0,pady = 0, width=button_width, height=button_height,image = hotplace_image, command=self.spot).place(x=button_x, y=button_y+52*2)
+        Button(self.frame3,text='텔레그램', relief='solid',overrelief ='ridge',bd = self.silid_size,background='white',padx = 0,pady = 0,width=button_width, height=button_height,image = telegram_image, command=self.tele).place(x=button_x, y=button_y+52*3)
+        Label(window, text='추천 옷차림', width=130, height=140,image = bestfashion_image).place(x=602, y=370)
 
         #시 별로 위도 경도 저장
         self.dic={'수원':[127.0286009, 37.2635727],'성남':[127.1388684, 37.4449168],'부천':[126.766 ,37.44],'안양':[126.9568209, 37.3942527],'안산':[126.8308848, 37.3218778],'용인':[127.1775537, 37.2410864],'광명':[126.8642888,37.4784878],'평택':[127.1129451,36.9921075 ],
@@ -248,7 +266,7 @@ class maingui:
         req = conn.getresponse()
         self.load(req.read())
         self.fasihon()
-        self.Map()
+        #self.Map()
 
     def showMap(self,frame):
         sys.excepthook = cef.ExceptHook
@@ -329,7 +347,7 @@ class maingui:
             Label(self.frame3,width=w, height=h, image=self.cloth8).place(x=x, y=y)
 
     def graph(self):
-        self.button.destroy()
+        #self.button.destroy()
         rectm.clear()
         recws.clear()
         adress = urllib.parse.quote(self.entry.get() + '시')
@@ -448,7 +466,7 @@ class maingui:
 
 
     def spot(self):
-        self.button.destroy()
+        #self.button.destroy()
         from io import BytesIO
         #from PIL import ImageTk, Image as imge
         conn = http.client.HTTPConnection("api.visitkorea.or.kr")
@@ -466,15 +484,15 @@ class maingui:
         i = ImageTk.PhotoImage(im)
 
         self.canvas.delete('canvas')
-        resizeimg3 = im.resize((frame2_width + 30, 340), image.ANTIALIAS)
+        resizeimg3 = im.resize((canvas_width, canvas_height-100), image.ANTIALIAS)
         self.location = ImageTk.PhotoImage(resizeimg3)
 
-        w = frame2_width/2 + 50
-        h = 350
+        w = frame2_width/2 + 55
+        h = 320
 
-        self.canvas.create_text(w, h, text=self.sName.text,tags='canvas')
-        self.canvas.create_text(w, h+20, text=self.sLocation.text,tags='canvas')
-        self.canvas.create_text(w, h+40, text=self.sKeywords.text,tags='canvas')
+        self.canvas.create_text(w, h, text=self.sName.text,font=self.font2,tags='canvas',fill='gray',anchor = 's')
+        self.canvas.create_text(w, h+20, text=self.sLocation.text,font=self.font2,tags='canvas')
+        self.canvas.create_text(w, h+40, text=self.sKeywords.text,font=self.font2,tags='canvas')
         self.canvas.create_image(0, 0, anchor=NW, image=self.location, tags='canvas')
 
     def tele(self):
