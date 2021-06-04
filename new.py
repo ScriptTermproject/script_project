@@ -25,6 +25,9 @@ from cefpython3 import cefpython as cef
 
 import tkinter.font as tkFont
 import tkinter as tk
+from geopy.geocoders import Nominatim
+from pprint import pprint
+import webbrowser
 
 rectm=[]
 recws=[]
@@ -169,11 +172,6 @@ class maingui:
         Button(self.frame3,text='텔레그램', relief='solid',overrelief ='ridge',bd = self.silid_size,background='white',padx = 0,pady = 0,width=button_width, height=button_height,image = telegram_image, command=self.tele).place(x=button_x, y=button_y+52*3)
         Label(window, text='추천 옷차림', width=130, height=140,image = bestfashion_image).place(x=602, y=370)
 
-        #시 별로 위도 경도 저장
-        self.dic={'수원':[127.0286009, 37.2635727],'성남':[127.1388684, 37.4449168],'부천':[126.766 ,37.44],'안양':[126.9568209, 37.3942527],'안산':[126.8308848, 37.3218778],'용인':[127.1775537, 37.2410864],'광명':[126.8642888,37.4784878],'평택':[127.1129451,36.9921075 ],
-                  '과천':[126.822052,37.335224 ],'시흥':[126.8031025,37.3798877],'군포':[126.9351741,37.3616703],'의왕':[126.9683104, 37.344701],'오산':[127.0772212,37.1498096],'하남':[127.2148919,37.5392646],'이천':[127.4348221,37.2719952],'김포':[126.7156325,37.6152464],
-                 '안성':[127.2796786, 37.0079695],'화성':[126.8311887, 37.1994932],'광주':[127.2561413,37.4171413],'여주':[127.71 ,37.29 ],'의정부':[127.0336819,37.73809800000001 ],'고양':[126.8320201, 37.65835990000001],'동두천':[127.0605075,37.9034112 ],'구리':[127.1295646,37.5943124 ],
-                 '남양주':[127.2165279,37.6360028],'파주':[126.7801781,37.7598688],'양주':[127.071991,37.796763 ],'포천':[127.2003551,37.8949148]}
         self.mapwidth=700
         self.mapheight=600 #320
         window.mainloop()
@@ -267,33 +265,23 @@ class maingui:
         req = conn.getresponse()
         self.load(req.read())
         self.fasihon()
-        #self.Map()
-
-    def showMap(self,frame):
-        sys.excepthook = cef.ExceptHook
-        window_info = cef.WindowInfo(frame.winfo_id())
-        window_info.SetAsChild(frame.winfo_id(), [0, 0, self.mapwidth, self.mapheight])
-        cef.Initialize()
-        browser = cef.CreateBrowserSync(window_info, url='file:///map.html')
-
-        cef.MessageLoop()
+        self.Map()
 
     def mapwindow(self):
-         window2=Tk()
-         window2.geometry(str(self.mapwidth)+"x"+str(self.mapheight))
-         window2.title(self.entry.get()+"지도")
-         mapx=self.dic[self.entry.get()][0]
-         mapy=self.dic[self.entry.get()][1]
-         m = folium.Map(location=[mapy, mapx], zoom_start=13)
-         #html 파일로 저장
-         m.save('map.html')
 
-         #브라우저를 위한 쓰레드 생성
-         thread = threading.Thread(target=self.showMap, args=(window2,))
-         thread.daemon = True
-         thread.start()
+         app = Nominatim(user_agent='tutorial')
+         if self.entry.get()=='광주':
+             location = app.geocode("경기"+self.entry.get()+"시청")
+         else:
+            location = app.geocode(self.entry.get()+"시청") #위도 경도 추출
 
-         window2.mainloop()
+
+         m = folium.Map(location=[location.latitude, location.longitude], zoom_start=14)
+         folium.Marker([location.latitude, location.longitude]).add_to(m)
+         url = 'map.html'
+         m.save(url)
+         webbrowser.open(url)
+
 
     def Map(self):
         self.canvas.delete('canvas')
