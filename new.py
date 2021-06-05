@@ -26,6 +26,8 @@ from cefpython3 import cefpython as cef
 import tkinter.font as tkFont
 import tkinter as tk
 
+from teller import *
+
 rectm=[]
 recws=[]
 rec_sN=[]
@@ -47,9 +49,13 @@ class maingui:
         window.title('날씨에 맞는 옷차림 추천')
         window.configure(bg = 'white')
         #글꼴 추가
-        self.font = tkFont.Font(family="SeoulHangangEB.ttf", size=13, weight="bold", slant="italic")
+        self.font = tkFont.Font(family="경기천년제목_Bold.ttf", size=13, weight="bold", slant="italic")
+        self.font1 = tkFont.Font(family="경기천년제목_Bold.ttf", size=10, weight="bold", slant="roman")
         self.font2 = tkFont.Font(family="경기천년제목_Bold.ttf", size=16, weight="bold", slant="roman")
+        self.font2_2 = tkFont.Font(family="경기천년제목_Bold.ttf", size=16, weight="bold", slant="italic")
+
         self.font3 = tkFont.Font(family="경기천년제목_Bold.ttf", size=13, weight="bold", slant="roman")
+        self.font4 = tkFont.Font(family="경기천년제목_Bold.ttf", size=50, weight="bold", slant="roman")
 
         frame = Frame(window, width=frame1_width, height=frame1_height)
         frame['relief']= 'flat'
@@ -100,8 +106,8 @@ class maingui:
         self.canvas.place(x=0,y=0)
         #self.canvas.create_image(30, 0, anchor='nw', image=frame2_bg) #캔버스 배경
 
-        weatherx=90
-        weathery=80
+        weatherx=100
+        weathery=90
         night = image.open('resource/night.png')# 밤
         resizeimg3 = night.resize((weatherx, weathery), image.ANTIALIAS)
         self.night = ImageTk.PhotoImage(resizeimg3)
@@ -147,7 +153,9 @@ class maingui:
         resizeimg13 = c8.resize((rw, rh), image.ANTIALIAS)
         self.cloth8 = ImageTk.PhotoImage(resizeimg13)
 
-
+        c9 = image.open('resource/지도버튼.png')
+        resizeimg14 = c9.resize((20, 20), image.ANTIALIAS)
+        self.map_button_img = ImageTk.PhotoImage(resizeimg14)
 
         self.frame3 = Frame(window, width=60, height=52*4-2)
         self.frame3.place(x=550,y=100)
@@ -209,14 +217,14 @@ class maingui:
 
             sI=self.sSpot_img.text
             sL=self.sLocation.text
-            sK=self.sKeywords.text
+            sK=self.sKeywords.text.split(",")
 
             rec_sI.append(sI)
             rec_sL.append(sL)
-            rec_sK.append(sK)
+
+            for i in range(len(sK)):
+                rec_sK.append(sK[i])
     def gmail(self):
-
-
         # global value
         host = "smtp.gmail.com"  # Gmail STMP 서버 주소.
         port = "587"
@@ -298,29 +306,37 @@ class maingui:
     def Map(self):
         self.canvas.delete('canvas')
         now=time.localtime()
-        self.canvas.create_text(90, 330, text='현재 시간: ' + str(now.tm_hour)+':'+str(now.tm_min), tags='canvas')
-        self.canvas.create_text(90, 360, text='현재 온도: ' + self.tp.text+' ℃', tags='canvas')  # ℃
-        self.canvas.create_text(90, 390, text='현재 풍속: ' + self.ws.text+' m/s', tags='canvas')  # m/s
+        h = canvas_height - 100 + 5
+        fh =25
+        tx = 125
+        tx2 = 300
+        tx3=15
+        self.canvas.create_text(tx, h, fill = 'gray',text='현재 온도 ℃             ',anchor=tk.SW,font=self.font1, tags='canvas')
+        self.canvas.create_text(tx2, h, fill = 'black',text='현재 시간              ' + str(now.tm_hour)+':'+str(now.tm_min),anchor=tk.SW,font=self.font1, tags='canvas')
+        self.canvas.create_text(tx2, h+fh,fill = 'red', text='체감 기온              {0:.3f}'.format(self.tm)+' ℃',font=self.font1,anchor=tk.SW, tags='canvas')
+        self.canvas.create_text(tx2, h+fh*2,fill = 'green', text='현재 풍속              ' + self.ws.text+' m/s', font=self.font1,anchor=tk.SW,tags='canvas')  # m/s
         # 13.12 + 0.6215 * T - 11.37 * V ^ (0.16) + 0.3965 * V ^ (0.16) * T
-        self.canvas.create_text(290, 360, text='체감 기온: {0:.3f}'.format(self.tm)+' ℃', tags='canvas')
-        self.canvas.create_text(290, 390, text='시간 누적 강수량: {0:.1f}'.format(float(self.rain.text)) + 'mm', tags='canvas')
+        self.canvas.create_text(tx2, h+fh*3,fill = 'blue', font=self.font1,anchor=tk.SW,text='시간 누적 강수량   {0:.1f}'.format(float(self.rain.text)) + 'mm', tags='canvas')
+        self.canvas.create_text(tx, h,text= self.tp.text, font=self.font4,anchor=tk.NW,tags='canvas')  # ℃
+        self.canvas.create_line(tx2-20,canvas_height*2//3,tx2-20 ,canvas_height,width = 4)
         if(float(self.rain.text)>0):
-            self.canvas.create_image(380, 320, anchor=NW, image=self.rainimg, tags='canvas')
+            self.canvas.create_image(tx3, h, anchor=NW, image=self.rainimg, tags='canvas')
         else:
             if(6<=now.tm_hour<=19):
-                self.canvas.create_image(380, 320, anchor=NW, image=self.sunny, tags='canvas')
+                self.canvas.create_image(tx3, h-10, anchor=NW, image=self.sunny, tags='canvas')
             else:
-                self.canvas.create_image(380, 320, anchor=NW, image=self.night, tags='canvas')
+                self.canvas.create_image(tx3, h, anchor=NW, image=self.night, tags='canvas')
 
 
 
 
         img = image.open('resource/지역/'+self.entry.get()+'.png')
-        resizeimg = img.resize((700, 320), image.ANTIALIAS)
+        resizeimg = img.resize((canvas_width, canvas_height*2//3), image.ANTIALIAS)
         self.imgmap = ImageTk.PhotoImage(resizeimg)
         self.canvas.create_image(0,0,anchor=NW,image=self.imgmap,tags='canvas')
-        self.button=Button(self.canvas,width=7,height=3,command=self.mapwindow,text='지도 보기')
-        self.button.place(x=500,y=330)
+        #self.button=Button(self.canvas,width=7,height=3,command=self.mapwindow,text='지도 보기',image = self.map_button_img)
+        self.button=Button(self.canvas, text = '엔터', height = 20, width = 20,relief='flat', image = self.map_button_img, bg = 'white', overrelief = 'flat', bd = self.silid_size, padx = 0, pady = 0, command = self.mapwindow)
+        self.button.place(x=0,y=0)
 
 
 
@@ -450,21 +466,25 @@ class maingui:
                 req = conn.getresponse()
                 self.load(req.read())
 
+        mx = 10
         self.canvas.delete('canvas')
-        self.canvas.create_rectangle(40, 10, 70, 20, fill='orange', tags='canvas')
-        self.canvas.create_rectangle(40, 30, 70, 40, fill='blue', tags='canvas')
-        self.canvas.create_text(85, 15, text="기온", tags='canvas')
-        self.canvas.create_text(85, 35, text="풍속", tags='canvas')
+        self.canvas.create_rectangle(20-mx, 10, 50-mx, 20, fill='orange', tags='canvas')
+        self.canvas.create_rectangle(20-mx, 30, 50-mx, 40, fill='blue', tags='canvas')
+        self.canvas.create_text(65-mx, 15, text="기온", font = self.font1,tags='canvas')
+        self.canvas.create_text(65-mx, 35, text="풍속",font = self.font1, tags='canvas')
 
         Maxt=max(rectm)
         Maxw=max(recws)
+        w = canvas_width
+        h = canvas_height-20
+        rw=56
+        rx = 42
         for i in range(len(rectm)):
-            self.canvas.create_rectangle(50+56*i,380-200*rectm[i]/Maxt,73+56*i,380,fill='orange',tags='canvas')
-            self.canvas.create_text(73+56*i,390,text=now.tm_hour-i,tags='canvas')
-            self.canvas.create_text(63 + 56 * i, 380-200*rectm[i]/Maxt-10, text=rectm[i], tags='canvas')
-            self.canvas.create_rectangle(73+56*i, 380-100 * recws[i]/Maxw, 40 + 56 * (i + 1), 380, fill='blue',tags='canvas')
-            self.canvas.create_text(85 + 56 * i, 380-100 * recws[i]/Maxw - 10, text=recws[i], tags='canvas')
-
+            self.canvas.create_rectangle(50+rw*i-rx,h-200*rectm[i]/Maxt,73+rw*i-rx,h,fill='orange',tags='canvas')
+            self.canvas.create_text(73+rw*i-rx,h+10,font = self.font1,text=now.tm_hour-i,tags='canvas')
+            self.canvas.create_text(63 + rw * i-rx, h-200*rectm[i]/Maxt-10, font = self.font1,text=rectm[i], tags='canvas')
+            self.canvas.create_rectangle(73+rw*i-rx, h-100 * recws[i]/Maxw, 40 + rw * (i + 1)-rx, h, fill='blue',tags='canvas')
+            self.canvas.create_text(85 + rw * i-rx, h-100 * recws[i]/Maxw - 10,font = self.font1, text=recws[i], tags='canvas')
 
     def spot(self):
         #self.button.destroy()
@@ -485,20 +505,39 @@ class maingui:
         i = ImageTk.PhotoImage(im)
 
         self.canvas.delete('canvas')
-        resizeimg3 = im.resize((canvas_width, canvas_height-100), image.ANTIALIAS)
+        resizeimg3 = im.resize((canvas_width, canvas_height-150), image.ANTIALIAS)
         self.location = ImageTk.PhotoImage(resizeimg3)
 
-        w = frame2_width/2 + 55
-        h = 320
+        w = canvas_height-150 + 30
+        h = canvas_height//2
+        th = 50
+        self.canvas.create_text(12, 20,anchor=NW,text='"오늘 뭐 하지.. 날씨도 좋은데, ',font=self.font2_2,tags='canvas',fill='black')
+        self.canvas.create_text(canvas_width-12, 50,anchor=NE,text=self.sName.text + '나 갈까?"',font=self.font2_2,tags='canvas',fill='black')
 
-        self.canvas.create_text(w, h, text='-추천 명소-  '+self.sName.text,font=self.font2,tags='canvas',fill='black',anchor = 's')
-        self.canvas.create_text(w, h+20, text=self.sLocation.text,font=self.font3,tags='canvas',fill='gray')
-        self.canvas.create_text(w, h+40, text=self.sKeywords.text,font=self.font3,tags='canvas',fill='gray')
-        self.canvas.create_image(0, 0, anchor=NW, image=self.location, tags='canvas')
+        #self.canvas.create_text(w, h-th, anchor=W,text='- '+self.sName.text+' -',font=self.font3,tags='canvas',fill='black')
+        self.canvas.create_text(canvas_width//2, canvas_height-50,anchor=N, text='위치 : '+self.sLocation.text,font=self.font3,tags='canvas',fill='gray')
+        num = 0
+        for i in range(len(rec_sK)):
+            self.canvas.create_text(5+num*13, canvas_height,anchor=SW, text='#' + str(rec_sK[i]) +' ',font=self.font3,tags='canvas',fill='blue')
+            num += len(rec_sK[i])+2
+        self.canvas.create_image(0, 80, anchor=NW, image=self.location, tags='canvas')
 
     def tele(self):
-        self.button.destroy()
+        #self.button.destroy()
         self.canvas.delete('canvas')
-        self.canvas.create_text(300, 210, text='텔레그램',tags='canvas')
+        self.canvas.create_text(canvas_width//2+20, canvas_height//2, text='Loading . . .',font = self.font2,fill='blue',tags='canvas')
+
+        today = date.today()
+        current_month = today.strftime('%Y%m')
+
+        print('[', today, ']received token :', noti.TOKEN)
+
+        bot = telepot.Bot(noti.TOKEN)
+        pprint(bot.getMe())
+
+        bot.message_loop(handle)
+
+        print('Listening...')
+
 
 maingui()
