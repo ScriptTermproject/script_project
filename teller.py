@@ -26,6 +26,7 @@ def replyAptData(date_param, user, loc_param):
             msg = r+'\n'
         else:
             msg += r+'\n'
+
     if msg:
         noti.sendMessage( user, msg )
     else:

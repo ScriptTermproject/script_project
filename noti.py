@@ -26,11 +26,13 @@ def getData(loc_param, date_param):
     #print(res_body)
     soup = BeautifulSoup(res_body, 'html.parser')
     items = soup.findAll('row')
+    print(items)
     for item in items:
         item = re.sub('<.*?>', '|', item.text)
-        parsed = item.split('|')
+        parsed = item.split('\n')
         try:
-            row = parsed[3]+'/'+parsed[6]+'/'+parsed[7]+', '+parsed[4]+' '+parsed[5]+', '+parsed[8]+'m², '+parsed[11]+'F, '+parsed[1].strip()+'만원\n'
+            row='지역: '+parsed[1]+'\n지역 코드: '+parsed[2]+'\n관측 날짜: '+parsed[6]+'\n관측 시간: '+parsed[7]+'h'+'\n풍속: '+parsed[12]+' m/s'+\
+                '\n기온: '+parsed[13]+'℃'+"\n습도: "+parsed[14]+'%'+'\n시간 누적 장수량: '+parsed[18]+'mm'+'\n일 누적 강수량: '+parsed[19]+'mm'
         except IndexError:
             row = item.replace('|', ',')
 

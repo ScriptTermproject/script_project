@@ -306,7 +306,7 @@ class maingui:
         # 13.12 + 0.6215 * T - 11.37 * V ^ (0.16) + 0.3965 * V ^ (0.16) * T
         self.canvas.create_text(tx2, h+fh*3,fill = 'blue', font=self.font1,anchor=tk.SW,text='시간 누적 강수량   {0:.1f}'.format(float(self.rain.text)) + 'mm', tags='canvas')
         self.canvas.create_text(tx, h,text= self.tp.text, font=self.font4,anchor=tk.NW,tags='canvas')  # ℃
-        self.canvas.create_line(tx2-20,canvas_height*2//3,tx2-20 ,canvas_height,width = 4)
+        self.canvas.create_line(tx2-20,canvas_height*2//3,tx2-20 ,canvas_height,width = 4,tags='canvas')
         if(float(self.rain.text)>0):
             self.canvas.create_image(tx3, h, anchor=NW, image=self.rainimg, tags='canvas')
         else:
@@ -352,7 +352,7 @@ class maingui:
             Label(self.frame3,width=w, height=h, image=self.cloth8).place(x=x, y=y)
 
     def graph(self):
-        #self.button.destroy()
+        self.button.destroy()
         rectm.clear()
         recws.clear()
         adress = urllib.parse.quote(self.entry.get() + '시')
@@ -475,7 +475,7 @@ class maingui:
             self.canvas.create_text(85 + rw * i-rx, h-100 * recws[i]/Maxw - 10,font = self.font1, text=recws[i], tags='canvas')
 
     def spot(self):
-        #self.button.destroy()
+        self.button.destroy()
         from io import BytesIO
         #from PIL import ImageTk, Image as imge
         conn = http.client.HTTPConnection("api.visitkorea.or.kr")
@@ -511,7 +511,7 @@ class maingui:
         self.canvas.create_image(0, 80, anchor=NW, image=self.location, tags='canvas')
 
     def tele(self):
-        #self.button.destroy()
+        self.button.destroy()
         self.canvas.delete('canvas')
         self.canvas.create_text(canvas_width//2+20, canvas_height//2, text='Loading . . .',font = self.font2,fill='blue',tags='canvas')
 
