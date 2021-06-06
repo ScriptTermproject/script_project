@@ -28,6 +28,7 @@ import tkinter as tk
 from geopy.geocoders import Nominatim
 from pprint import pprint
 import webbrowser
+import spam  #spam.pyd를 python/Lib에 넣어야함
 
 from teller import *
 
@@ -68,6 +69,7 @@ class maingui:
         # 이미지 리사이즈
         frame_im = image.open('resource/제목.png')
         frame2_im = image.open('resource/배경화면3.png')
+
         resizeimg=frame_im.resize((frame1_width, frame1_height), image.ANTIALIAS)
         frame1_bg=ImageTk.PhotoImage(resizeimg)
 
@@ -79,7 +81,7 @@ class maingui:
 
         Label(frame,image = frame1_bg).place(x=0,y=0)
         self.entry = Entry(frame, width=50 ,foreground ='gray', borderwidth=4,insertbackground = 'white',selectbackground='gray',selectforeground = 'black' ,background = 'white',relief='solid',font = self.font,insertontime = 600,insertofftime = 300)
-        # entry.insert(0,'검색할 지역을 시 단위로 입력하세요.')
+
         self.entry.insert(0, '시흥')
         self.entry.place(x=70, y=20)
 
@@ -178,7 +180,9 @@ class maingui:
         Button(self.frame3, text='그래프', relief='solid',overrelief ='ridge',bd = self.silid_size,background='white',padx = 0,pady = 0,width=button_width, height=button_height,image = graph_image, command=self.graph).place(x=button_x, y=button_y+52)
         Button(self.frame3, text='명소',relief='solid',overrelief ='ridge',bd = self.silid_size,background='white',padx = 0,pady = 0, width=button_width, height=button_height,image = hotplace_image, command=self.spot).place(x=button_x, y=button_y+52*2)
         Button(self.frame3,text='텔레그램', relief='solid',overrelief ='ridge',bd = self.silid_size,background='white',padx = 0,pady = 0,width=button_width, height=button_height,image = telegram_image, command=self.tele).place(x=button_x, y=button_y+52*3)
-        Label(window, text='추천 옷차림', width=130, height=140,image = bestfashion_image).place(x=602, y=370)
+        self.label=Label(window, text='추천 옷차림', width=130, height=140,image = bestfashion_image)
+        self.label.place(x=602, y=370)
+
 
         self.mapwidth=700
         self.mapheight=600 #320
@@ -190,14 +194,12 @@ class maingui:
         itemElements = tree.iter("row")
 
         for item in itemElements:
-            self.tp = item.find("TP_INFO") #기온
-            self.ws = item.find("WS_INFO") #풍속
-            self.rain=item.find("RAINF_1HR_INFO") #시간누적강수량
-            if len(self.ws.text) > 0 :
-                T=float(self.tp.text)
-                V=(float(self.ws.text)*3.6) ** (0.16)
-                self.tm=13.12 + 0.6215 * T - 11.37 * V + 0.3965 * V * T
-            rectm.append(T)
+            self.tp = item.find("TP_INFO")  # 기온
+            self.ws = item.find("WS_INFO")  # 풍속
+            self.rain = item.find("RAINF_1HR_INFO")  # 시간누적강수량
+            if len(self.ws.text) > 0:
+                self.tm = spam.temp(float(self.tp.text), float(self.ws.text))
+            rectm.append(float(self.tp.text))
             recws.append(float(self.ws.text))
 
     def load_2(self,strXml):
@@ -335,21 +337,21 @@ class maingui:
         x = 20
         y = 290
         if T >= 28.0:
-            Label(self.frame3, width=w, height=h, image=self.cloth1).place(x=x, y=y)
+            self.label.configure(image=self.cloth1)
         elif 23.0<= T:
-            Label(self.frame3, width=w, height=h, image=self.cloth2).place(x=x, y=y)
+            self.label.configure(image=self.cloth2)
         elif 20.0<= T:
-            Label(self.frame3, width=w, height=h, image=self.cloth3).place(x=x, y=y)
+            self.label.configure(image=self.cloth3)
         elif 17.0 <= T :
-            Label(self.frame3,  width=w, height=h, image=self.cloth4).place(x=x, y=y)
+            self.label.configure(image=self.cloth4)
         elif 12.0 <= T :
-            Label(self.frame3, width=w, height=h, image=self.cloth5).place(x=x, y=y)
+            self.label.configure(image=self.cloth5)
         elif 9.0 <= T :
-            Label(self.frame3, width=w, height=h, image=self.cloth6).place(x=x, y=y)
+            self.label.configure(image=self.cloth6)
         elif 5.0 <= T :
-            Label(self.frame3, width=w, height=h, image=self.cloth7).place(x=x, y=y)
+            self.label.configure(image=self.cloth7)
         else:
-            Label(self.frame3,width=w, height=h, image=self.cloth8).place(x=x, y=y)
+            self.label.configure(image=self.cloth8)
 
     def graph(self):
         self.button.destroy()
