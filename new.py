@@ -263,7 +263,7 @@ class maingui:
         s.ehlo()
         s.starttls()
         s.ehlo()
-        s.login("5seunghun32@gmail.com", "5seunghun")
+        s.login("5seunghun32@gmail.com", "ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ")
         s.sendmail(senderAddr, [recipientAddr], msg.as_string())
         s.close()
 
