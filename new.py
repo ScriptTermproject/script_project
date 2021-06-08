@@ -13,6 +13,7 @@ import mimetypes
 import mysmtplib
 from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
 
 from tkinter import *
 import threading
@@ -228,23 +229,33 @@ class maingui:
         # global value
         host = "smtp.gmail.com"  # Gmail STMP 서버 주소.
         port = "587"
-        htmlFileName = "logo.html"
 
         senderAddr = "5seunghun32@gmail.com"  # 보내는 사람 email 주소.
         recipientAddr = "5seunghun@naver.com"  # 받는 사람 email 주소.
 
         msg = MIMEBase("multipart", "alternative")
-        msg['Subject'] = "Test email in Python 3.0"
+        msg['Subject'] = "오늘 뭐입지? 의상추천"
         msg['From'] = senderAddr
         msg['To'] = recipientAddr
 
         # MIME 문서를 생성합니다.
-        htmlFD = open(htmlFileName, 'rb')
-        HtmlPart = MIMEText(htmlFD.read(), 'html', _charset='UTF-8')
-        htmlFD.close()
+
+        imageFD = open(self.imageFileName, 'rb')  # image 파일 오픈 후 MIMEImage생성
+        ImagePart = MIMEImage(imageFD.read(),Name=self.imageFileName)
+        imageFD.close()
+
+        html = "<html><header></header><body><b>오늘 뭐입지? 의상추천</b><br><p>지역: " + self.entry.get() + '시</p><p>온도: ' + self.tp.text + " ℃</p><p>풍속: " + self.ws.text + ' m/s</p><p>체감 기온: {0:.3f}'.format(
+            self.tm) \
+               + ' ℃</p><p>강수량: ' + self.rain.text + " mm</p><p>　</p><p> 추천 명소: "+self.sName.text+"</p>"+self.sLocation.text+"<p></p><img src=\"" + self.sSpot_img.text + "\"/><p>　</p><p>추천 의상</p></body></html>"
+        part2 = MIMEText(html, 'html')
+
+        msg.add_header('Content-Disposition', 'attachment', filename=self.imageFileName)
 
         # 만들었던 mime을 MIMEBase에 첨부 시킨다.
-        msg.attach(HtmlPart)
+
+        msg.attach(ImagePart)
+        msg.attach(part2)
+
 
         # 메일을 발송한다.
         s = mysmtplib.MySMTP(host, port)
@@ -252,7 +263,7 @@ class maingui:
         s.ehlo()
         s.starttls()
         s.ehlo()
-        s.login("5seunghun32@gmail.com", "비밀번호")
+        s.login("5seunghun32@gmail.com", "5seunghun")
         s.sendmail(senderAddr, [recipientAddr], msg.as_string())
         s.close()
 
@@ -338,20 +349,28 @@ class maingui:
         y = 290
         if T >= 28.0:
             self.label.configure(image=self.cloth1)
+            self.imageFileName='resource/28이상.png'
         elif 23.0<= T:
             self.label.configure(image=self.cloth2)
+            self.imageFileName = 'resource/23~27.png'
         elif 20.0<= T:
             self.label.configure(image=self.cloth3)
+            self.imageFileName = 'resource/20~22.png'
         elif 17.0 <= T :
             self.label.configure(image=self.cloth4)
+            self.imageFileName = 'resource/17~19.png'
         elif 12.0 <= T :
             self.label.configure(image=self.cloth5)
+            self.imageFileName = 'resource/12~16.png'
         elif 9.0 <= T :
             self.label.configure(image=self.cloth6)
+            self.imageFileName = 'resource/9~11.png'
         elif 5.0 <= T :
             self.label.configure(image=self.cloth7)
+            self.imageFileName = 'resource/5~8.png'
         else:
             self.label.configure(image=self.cloth8)
+            self.imageFileName = 'resource/4이하.png'
 
     def graph(self):
         self.button.destroy()
