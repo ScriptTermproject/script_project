@@ -2,6 +2,7 @@
 from xml.dom.minidom import parse, parseString
 from xml.etree import ElementTree
 from PIL import ImageTk,Image as image  #이미지 크기 조정  사용하려면 파이참 아래의 Terminal 클릭하고 pip install pillow입력
+image.ANTIALIAS = image.LANCZOS
 
 import urllib
 import urllib.request
@@ -26,6 +27,7 @@ from cefpython3 import cefpython as cef
 
 import tkinter.font as tkFont
 import tkinter as tk
+#pip install geopy
 from geopy.geocoders import Nominatim
 from pprint import pprint
 import webbrowser
@@ -225,13 +227,14 @@ class maingui:
 
             for i in range(len(sK)):
                 rec_sK.append(sK[i])
+
     def gmail(self):
         # global value
         host = "smtp.gmail.com"  # Gmail STMP 서버 주소.
         port = "587"
 
-        senderAddr = "5seunghun32@gmail.com"  # 보내는 사람 email 주소.
-        recipientAddr = "5seunghun@naver.com"  # 받는 사람 email 주소.
+        senderAddr = "SendPeople@gmail.com"  # 보내는 사람 email 주소.
+        recipientAddr = "RecivePeople@naver.com"  # 받는 사람 email 주소.
 
         msg = MIMEBase("multipart", "alternative")
         msg['Subject'] = "오늘 뭐입지? 의상추천"
@@ -263,7 +266,7 @@ class maingui:
         s.ehlo()
         s.starttls()
         s.ehlo()
-        s.login("5seunghun32@gmail.com", "ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ")
+        s.login("e-mail@__", "Password") # 이메일 로그인 정보 입력
         s.sendmail(senderAddr, [recipientAddr], msg.as_string())
         s.close()
 
@@ -271,18 +274,18 @@ class maingui:
         server = "openapi.gg.go.kr"
         conn = http.client.HTTPSConnection(server)
         if self.entry.get()=='안양':
-            conn.request("GET", "/AWS1hourObser?KEY=f04c1c1227c2408faa4de276beda54a4&pSize=1&SPOT_NO=434")
+            conn.request("GET", "/AWS1hourObser?KEY=866b62ef0f3049a1a05c9f689b5e3fad&pSize=1&SPOT_NO=434")
         elif self.entry.get()=='과천':
-            conn.request("GET", "/AWS1hourObser?KEY=f04c1c1227c2408faa4de276beda54a4&pSize=1&SPOT_NO=116")
+            conn.request("GET", "/AWS1hourObser?KEY=866b62ef0f3049a1a05c9f689b5e3fad&pSize=1&SPOT_NO=116")
         elif self.entry.get()=='의왕':
-            conn.request("GET", "/AWS1hourObser?KEY=f04c1c1227c2408faa4de276beda54a4&pSize=1&SPOT_NO=445")
+            conn.request("GET", "/AWS1hourObser?KEY=866b62ef0f3049a1a05c9f689b5e3fad&pSize=1&SPOT_NO=445")
         elif self.entry.get()=='광주':
-            conn.request("GET", "/AWS1hourObser?KEY=f04c1c1227c2408faa4de276beda54a4&pSize=1&SPOT_NO=460")
+            conn.request("GET", "/AWS1hourObser?KEY=866b62ef0f3049a1a05c9f689b5e3fad&pSize=1&SPOT_NO=460")
         elif self.entry.get()=='고양':
-            conn.request("GET", "/AWS1hourObser?KEY=f04c1c1227c2408faa4de276beda54a4&pSize=1&SPOT_NO=589")
+            conn.request("GET", "/AWS1hourObser?KEY=866b62ef0f3049a1a05c9f689b5e3fad&pSize=1&SPOT_NO=589")
         else:
             adress = urllib.parse.quote(self.entry.get()+'시')
-            conn.request("GET", "/AWS1hourObser?KEY=f04c1c1227c2408faa4de276beda54a4&pSize=1&SIGUN_NM="+adress)
+            conn.request("GET", "/AWS1hourObser?KEY=866b62ef0f3049a1a05c9f689b5e3fad&pSize=1&SIGUN_NM="+adress)
         req = conn.getresponse()
         self.load(req.read())
         self.fasihon()
@@ -384,41 +387,41 @@ class maingui:
             for i in range(10):
                 if now.tm_hour-i<10:
                     if self.entry.get() == '안양':
-                        conn.request("GET", "/AWS1hourObser?KEY=f04c1c1227c2408faa4de276beda54a4&pSize=1&SPOT_NO=434&MESURE_TM=0" + str(
+                        conn.request("GET", "/AWS1hourObser?KEY=866b62ef0f3049a1a05c9f689b5e3fad&pSize=1&SPOT_NO=434&MESURE_TM=0" + str(
                         now.tm_hour - i) )
                     elif self.entry.get() == '과천':
-                        conn.request("GET", "/AWS1hourObser?KEY=f04c1c1227c2408faa4de276beda54a4&pSize=1&SPOT_NO=116&MESURE_TM=0" + str(
+                        conn.request("GET", "/AWS1hourObser?KEY=866b62ef0f3049a1a05c9f689b5e3fad&pSize=1&SPOT_NO=116&MESURE_TM=0" + str(
                         now.tm_hour - i) )
                     elif self.entry.get() == '의왕':
-                        conn.request("GET", "/AWS1hourObser?KEY=f04c1c1227c2408faa4de276beda54a4&pSize=1&SPOT_NO=445&MESURE_TM=0" + str(
+                        conn.request("GET", "/AWS1hourObser?KEY=866b62ef0f3049a1a05c9f689b5e3fad&pSize=1&SPOT_NO=445&MESURE_TM=0" + str(
                         now.tm_hour - i) )
                     elif self.entry.get() == '광주':
-                        conn.request("GET", "/AWS1hourObser?KEY=f04c1c1227c2408faa4de276beda54a4&pSize=1&SPOT_NO=460&MESURE_TM=0" + str(
+                        conn.request("GET", "/AWS1hourObser?KEY=866b62ef0f3049a1a05c9f689b5e3fad&pSize=1&SPOT_NO=460&MESURE_TM=0" + str(
                         now.tm_hour - i) )
                     elif self.entry.get() == '고양':
-                        conn.request("GET", "/AWS1hourObser?KEY=f04c1c1227c2408faa4de276beda54a4&pSize=1&SPOT_NO=589&MESURE_TM=0" + str(
+                        conn.request("GET", "/AWS1hourObser?KEY=866b62ef0f3049a1a05c9f689b5e3fad&pSize=1&SPOT_NO=589&MESURE_TM=0" + str(
                         now.tm_hour - i) )
                     else:
-                        conn.request("GET", "/AWS1hourObser?KEY=f04c1c1227c2408faa4de276beda54a4&MESURE_TM=0" + str(
+                        conn.request("GET", "/AWS1hourObser?KEY=866b62ef0f3049a1a05c9f689b5e3fad&MESURE_TM=0" + str(
                         now.tm_hour - i) + "&pSize=1&SIGUN_NM=" + adress)
                 else:
                     if self.entry.get() == '안양':
-                        conn.request("GET", "/AWS1hourObser?KEY=f04c1c1227c2408faa4de276beda54a4&pSize=1&SPOT_NO=434&MESURE_TM=" + str(
+                        conn.request("GET", "/AWS1hourObser?KEY=866b62ef0f3049a1a05c9f689b5e3fad&pSize=1&SPOT_NO=434&MESURE_TM=" + str(
                         now.tm_hour - i) )
                     elif self.entry.get() == '과천':
-                        conn.request("GET", "/AWS1hourObser?KEY=f04c1c1227c2408faa4de276beda54a4&pSize=1&SPOT_NO=116&MESURE_TM=" + str(
+                        conn.request("GET", "/AWS1hourObser?KEY=866b62ef0f3049a1a05c9f689b5e3fad&pSize=1&SPOT_NO=116&MESURE_TM=" + str(
                         now.tm_hour - i) )
                     elif self.entry.get() == '의왕':
-                        conn.request("GET", "/AWS1hourObser?KEY=f04c1c1227c2408faa4de276beda54a4&pSize=1&SPOT_NO=445&MESURE_TM=" + str(
+                        conn.request("GET", "/AWS1hourObser?KEY=866b62ef0f3049a1a05c9f689b5e3fad&pSize=1&SPOT_NO=445&MESURE_TM=" + str(
                         now.tm_hour - i) )
                     elif self.entry.get() == '광주':
-                        conn.request("GET", "/AWS1hourObser?KEY=f04c1c1227c2408faa4de276beda54a4&pSize=1&SPOT_NO=460&MESURE_TM=" + str(
+                        conn.request("GET", "/AWS1hourObser?KEY=866b62ef0f3049a1a05c9f689b5e3fad&pSize=1&SPOT_NO=460&MESURE_TM=" + str(
                         now.tm_hour - i) )
                     elif self.entry.get() == '고양':
-                        conn.request("GET", "/AWS1hourObser?KEY=f04c1c1227c2408faa4de276beda54a4&pSize=1&SPOT_NO=589&MESURE_TM=" + str(
+                        conn.request("GET", "/AWS1hourObser?KEY=866b62ef0f3049a1a05c9f689b5e3fad&pSize=1&SPOT_NO=589&MESURE_TM=" + str(
                         now.tm_hour - i) )
                     else:
-                        conn.request("GET", "/AWS1hourObser?KEY=f04c1c1227c2408faa4de276beda54a4&MESURE_TM="+str(
+                        conn.request("GET", "/AWS1hourObser?KEY=866b62ef0f3049a1a05c9f689b5e3fad&MESURE_TM="+str(
                         now.tm_hour-i)+"&pSize=1&SIGUN_NM=" + adress)
                 req = conn.getresponse()
                 self.load(req.read())
@@ -427,50 +430,50 @@ class maingui:
                 if now.tm_hour - i < 10:
                     if self.entry.get() == '안양':
                         conn.request("GET",
-                                     "/AWS1hourObser?KEY=f04c1c1227c2408faa4de276beda54a4&pSize=1&SPOT_NO=434&MESURE_TM=0" + str(
+                                     "/AWS1hourObser?KEY=866b62ef0f3049a1a05c9f689b5e3fad&pSize=1&SPOT_NO=434&MESURE_TM=0" + str(
                                          now.tm_hour - i))
                     elif self.entry.get() == '과천':
                         conn.request("GET",
-                                     "/AWS1hourObser?KEY=f04c1c1227c2408faa4de276beda54a4&pSize=1&SPOT_NO=116&MESURE_TM=0" + str(
+                                     "/AWS1hourObser?KEY=866b62ef0f3049a1a05c9f689b5e3fad&pSize=1&SPOT_NO=116&MESURE_TM=0" + str(
                                          now.tm_hour - i))
                     elif self.entry.get() == '의왕':
                         conn.request("GET",
-                                     "/AWS1hourObser?KEY=f04c1c1227c2408faa4de276beda54a4&pSize=1&SPOT_NO=445&MESURE_TM=0" + str(
+                                     "/AWS1hourObser?KEY=866b62ef0f3049a1a05c9f689b5e3fad&pSize=1&SPOT_NO=445&MESURE_TM=0" + str(
                                          now.tm_hour - i))
                     elif self.entry.get() == '광주':
                         conn.request("GET",
-                                     "/AWS1hourObser?KEY=f04c1c1227c2408faa4de276beda54a4&pSize=1&SPOT_NO=460&MESURE_TM=0" + str(
+                                     "/AWS1hourObser?KEY=866b62ef0f3049a1a05c9f689b5e3fad&pSize=1&SPOT_NO=460&MESURE_TM=0" + str(
                                          now.tm_hour - i))
                     elif self.entry.get() == '고양':
                         conn.request("GET",
-                                     "/AWS1hourObser?KEY=f04c1c1227c2408faa4de276beda54a4&pSize=1&SPOT_NO=589&MESURE_TM=0" + str(
+                                     "/AWS1hourObser?KEY=866b62ef0f3049a1a05c9f689b5e3fad&pSize=1&SPOT_NO=589&MESURE_TM=0" + str(
                                          now.tm_hour - i))
                     else:
-                        conn.request("GET", "/AWS1hourObser?KEY=f04c1c1227c2408faa4de276beda54a4&MESURE_TM=0" + str(
+                        conn.request("GET", "/AWS1hourObser?KEY=866b62ef0f3049a1a05c9f689b5e3fad&MESURE_TM=0" + str(
                             now.tm_hour - i) + "&pSize=1&SIGUN_NM=" + adress)
                 else:
                     if self.entry.get() == '안양':
                         conn.request("GET",
-                                     "/AWS1hourObser?KEY=f04c1c1227c2408faa4de276beda54a4&pSize=1&SPOT_NO=434&MESURE_TM=" + str(
+                                     "/AWS1hourObser?KEY=866b62ef0f3049a1a05c9f689b5e3fad&pSize=1&SPOT_NO=434&MESURE_TM=" + str(
                                          now.tm_hour - i))
                     elif self.entry.get() == '과천':
                         conn.request("GET",
-                                     "/AWS1hourObser?KEY=f04c1c1227c2408faa4de276beda54a4&pSize=1&SPOT_NO=116&MESURE_TM=" + str(
+                                     "/AWS1hourObser?KEY=866b62ef0f3049a1a05c9f689b5e3fad&pSize=1&SPOT_NO=116&MESURE_TM=" + str(
                                          now.tm_hour - i))
                     elif self.entry.get() == '의왕':
                         conn.request("GET",
-                                     "/AWS1hourObser?KEY=f04c1c1227c2408faa4de276beda54a4&pSize=1&SPOT_NO=445&MESURE_TM=" + str(
+                                     "/AWS1hourObser?KEY=866b62ef0f3049a1a05c9f689b5e3fad&pSize=1&SPOT_NO=445&MESURE_TM=" + str(
                                          now.tm_hour - i))
                     elif self.entry.get() == '광주':
                         conn.request("GET",
-                                     "/AWS1hourObser?KEY=f04c1c1227c2408faa4de276beda54a4&pSize=1&SPOT_NO=460&MESURE_TM=" + str(
+                                     "/AWS1hourObser?KEY=866b62ef0f3049a1a05c9f689b5e3fad&pSize=1&SPOT_NO=460&MESURE_TM=" + str(
                                          now.tm_hour - i))
                     elif self.entry.get() == '고양':
                         conn.request("GET",
-                                     "/AWS1hourObser?KEY=f04c1c1227c2408faa4de276beda54a4&pSize=1&SPOT_NO=589&MESURE_TM=" + str(
+                                     "/AWS1hourObser?KEY=866b62ef0f3049a1a05c9f689b5e3fad&pSize=1&SPOT_NO=589&MESURE_TM=" + str(
                                          now.tm_hour - i))
                     else:
-                        conn.request("GET", "/AWS1hourObser?KEY=f04c1c1227c2408faa4de276beda54a4&MESURE_TM=" + str(
+                        conn.request("GET", "/AWS1hourObser?KEY=866b62ef0f3049a1a05c9f689b5e3fad&MESURE_TM=" + str(
                             now.tm_hour - i) + "&pSize=1&SIGUN_NM=" + adress)
                 req = conn.getresponse()
                 self.load(req.read())

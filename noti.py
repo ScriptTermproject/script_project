@@ -12,7 +12,7 @@ import re
 from datetime import date, datetime, timedelta
 import traceback
 
-key = 'f04c1c1227c2408faa4de276beda54a4&pSize=1'
+key = '866b62ef0f3049a1a05c9f689b5e3fad&pSize=1'
 TOKEN = '1831151324:AAEQTj1Yw_iZ7OkS8AjS3DN5fuDVK5LLRgY'
 MAX_MSG_LENGTH = 300
 baseurl = 'https://openapi.gg.go.kr/AWS1hourObser?KEY='+key
